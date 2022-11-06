@@ -1,0 +1,5 @@
+.idea
+.gradle
+build
+
+src/main/java/ru/smartel/chessonomics/TestClient.java
