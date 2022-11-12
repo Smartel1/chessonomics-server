@@ -24,6 +24,7 @@ public class ConnectionContext {
     public void sendMessageToClient(String message) {
         new Thread(() -> {
             synchronized (outputWriter) {
+                System.out.println("Sent command: " + message);
                 outputWriter.println(message);
             }
         }).start();

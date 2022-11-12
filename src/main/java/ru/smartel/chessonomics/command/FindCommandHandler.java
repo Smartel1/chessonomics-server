@@ -20,7 +20,7 @@ public class FindCommandHandler implements CommandHandler {
     @Override
     public void process(ConnectionContext connectionContext, String command) {
         if (connectionContext.getPlayer() == null) {
-            connectionContext.sendMessageToClient("you should register first");
+            connectionContext.sendMessageToClient("you should login first");
         }
         searchingPlayers.put(connectionContext.getPlayer().getName(), connectionContext);
         synchronized (searchingPlayers) {

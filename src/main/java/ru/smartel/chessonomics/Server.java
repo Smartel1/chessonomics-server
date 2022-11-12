@@ -3,6 +3,7 @@ package ru.smartel.chessonomics;
 import ru.smartel.chessonomics.command.CommandHandler;
 import ru.smartel.chessonomics.command.FindCommandHandler;
 import ru.smartel.chessonomics.command.LoginCommandHandler;
+import ru.smartel.chessonomics.command.MoveCommandHandler;
 import ru.smartel.chessonomics.dto.ConnectionContext;
 
 import java.io.BufferedReader;
@@ -22,7 +23,8 @@ public class Server {
     public Server() {
         commandHandlers = List.of(
                 new LoginCommandHandler(),
-                new FindCommandHandler(searchingContextsByPlayerName)
+                new FindCommandHandler(searchingContextsByPlayerName),
+                new MoveCommandHandler()
         );
     }
 
@@ -32,7 +34,7 @@ public class Server {
 
     public void start(int port) throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("server is waiting for connections");
+            System.out.println("Server is waiting for connections");
             while (true) {
                 new ChessonomicsHandler(serverSocket.accept()).start();
             }
@@ -49,6 +51,7 @@ public class Server {
 
         public void run() {
             try {
+                System.out.println("Client connected");
                 PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
@@ -56,6 +59,7 @@ public class Server {
 
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
+                    System.out.println("Received command: " + inputLine);
                     if (".".equals(inputLine)) {
                         out.println("bye");
                         break;
