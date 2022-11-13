@@ -21,9 +21,15 @@ public class MoveCommandHandler implements CommandHandler {
             connectionContext.sendMessageToClient("error NotYourMove");
             return;
         }
+        var moveAsString = command.split(" ")[1];
+        if (moveAsString.equals("null")) {
+            chessBoard.doNullMove();
+            connectionContext.getOpponentContext().sendMessageToClient("move null");
+            return;
+        }
         Move move;
         try {
-            move = new Move(command.split(" ")[1], chessBoard.getSideToMove());
+            move = new Move(moveAsString, chessBoard.getSideToMove());
         } catch (Exception e) {
             connectionContext.sendMessageToClient("error InvalidMove");
             return;

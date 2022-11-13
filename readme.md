@@ -17,8 +17,12 @@ a command and arguments (just like command-line interaction).
 
 ## Available commands
 
-### login <player_name> 
-this command should be called first (right after connection). Server responds with 'hello <player_name>'
+### login [player_name] 
+this command should be called first (right after connection). Server responds with 'hello [player_name]'
 
 ### find
-puts the player into queue of searching players. When opponent is found server responds with 'started <opponent_name> <side>'
+puts the player into queue of searching players. When opponent is found server responds with 'started [opponent_name] [side]'
+
+### move [move]
+make a move. Server will validate the move and resend it to the opponent.
+Notice that [move] may me 'null' if player decided to skip the move (make null move).
