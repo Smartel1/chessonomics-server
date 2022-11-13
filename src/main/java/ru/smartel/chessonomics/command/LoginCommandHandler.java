@@ -15,7 +15,8 @@ public class LoginCommandHandler implements CommandHandler {
     public void process(ConnectionContext connectionContext, String command) {
         var commandParts = command.split(" ");
         if (commandParts.length != 2) {
-            connectionContext.sendMessageToClient("wrong command");
+            connectionContext.sendMessageToClient("error WrongCommand");
+            return;
         }
         var player = new Player(commandParts[1], PlayerStatus.LOGGED_IN);
         connectionContext.setPlayer(player);

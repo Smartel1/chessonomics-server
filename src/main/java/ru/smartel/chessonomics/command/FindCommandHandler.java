@@ -1,9 +1,15 @@
 package ru.smartel.chessonomics.command;
 
+import com.github.bhlangonijr.chesslib.Board;
+import com.github.bhlangonijr.chesslib.game.GameContext;
+import com.github.bhlangonijr.chesslib.game.GameMode;
+import com.github.bhlangonijr.chesslib.game.VariationType;
 import ru.smartel.chessonomics.dto.ConnectionContext;
-import ru.smartel.chessonomics.dto.PlayerStatus;
 
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.github.bhlangonijr.chesslib.Side.BLACK;
+import static com.github.bhlangonijr.chesslib.Side.WHITE;
 
 public class FindCommandHandler implements CommandHandler {
     private final ConcurrentHashMap<String, ConnectionContext> searchingPlayers;
@@ -20,7 +26,8 @@ public class FindCommandHandler implements CommandHandler {
     @Override
     public void process(ConnectionContext connectionContext, String command) {
         if (connectionContext.getPlayer() == null) {
-            connectionContext.sendMessageToClient("you should login first");
+            connectionContext.sendMessageToClient("error MustLogin");
+            return;
         }
         searchingPlayers.put(connectionContext.getPlayer().getName(), connectionContext);
         synchronized (searchingPlayers) {
@@ -36,10 +43,14 @@ public class FindCommandHandler implements CommandHandler {
                     }
                 }
 
-                context1.getPlayer().setStatus(PlayerStatus.PLAYING);
-                context2.getPlayer().setStatus(PlayerStatus.PLAYING);
-                context1.sendMessageToClient("found " + context2.getPlayer().getName());
-                context2.sendMessageToClient("found " + context1.getPlayer().getName());
+                var gameContext = new GameContext(GameMode.HUMAN_VS_HUMAN, VariationType.NORMAL);
+                var chessBoard = new Board(gameContext, true);
+
+                var randomSide = Math.random() > 0.5 ? WHITE : BLACK;
+
+                context1.initGame(chessBoard, randomSide, context2);
+                context2.initGame(chessBoard, randomSide.flip(), context1);
+
                 searchingPlayers.clear();
             }
         }

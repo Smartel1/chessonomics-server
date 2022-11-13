@@ -5,6 +5,7 @@ import ru.smartel.chessonomics.command.FindCommandHandler;
 import ru.smartel.chessonomics.command.LoginCommandHandler;
 import ru.smartel.chessonomics.command.MoveCommandHandler;
 import ru.smartel.chessonomics.dto.ConnectionContext;
+import ru.smartel.chessonomics.dto.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,13 +15,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
-    private final ConcurrentHashMap<String, ConnectionContext> searchingContextsByPlayerName = new ConcurrentHashMap<>();
     private final List<CommandHandler> commandHandlers;
 
     public Server() {
+        ConcurrentHashMap<String, ConnectionContext> searchingContextsByPlayerName = new ConcurrentHashMap<>();
         commandHandlers = List.of(
                 new LoginCommandHandler(),
                 new FindCommandHandler(searchingContextsByPlayerName),
@@ -59,7 +61,10 @@ public class Server {
 
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
-                    System.out.println("Received command: " + inputLine);
+                    var playerName = Optional.ofNullable(connectionContext.getPlayer())
+                            .map(Player::getName)
+                            .orElse("guest");
+                    System.out.println("Received command from " + playerName + ": " + inputLine);
                     if (".".equals(inputLine)) {
                         out.println("bye");
                         break;
@@ -71,14 +76,14 @@ public class Server {
                             .findFirst()
                             .ifPresentOrElse(
                                     h -> h.process(connectionContext, finalInputLine),
-                                    () -> out.println("wrong command"));
+                                    () -> out.println("error WrongCommand"));
                 }
 
                 in.close();
                 out.close();
                 clientSocket.close();
             } catch (Exception e) {
-                System.out.println("shit happens");
+                e.printStackTrace();
             }
         }
     }

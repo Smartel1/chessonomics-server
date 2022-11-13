@@ -21,4 +21,4 @@ a command and arguments (just like command-line interaction).
 this command should be called first (right after connection). Server responds with 'hello <player_name>'
 
 ### find
-puts the player into queue of searching players. When opponent is found server responds with 'found <opponent_name>'
+puts the player into queue of searching players. When opponent is found server responds with 'started <opponent_name> <side>'

@@ -1,5 +1,6 @@
 package ru.smartel.chessonomics.command;
 
+import com.github.bhlangonijr.chesslib.move.Move;
 import ru.smartel.chessonomics.dto.ConnectionContext;
 
 public class MoveCommandHandler implements CommandHandler {
@@ -12,9 +13,27 @@ public class MoveCommandHandler implements CommandHandler {
     @Override
     public void process(ConnectionContext connectionContext, String command) {
         if (connectionContext.getPlayer() == null) {
-            connectionContext.sendMessageToClient("you should login first");
+            connectionContext.sendMessageToClient("error MustLogin");
+            return;
         }
-        // stub
-        connectionContext.sendMessageToClient("move e7e6");
+        var chessBoard = connectionContext.getChessBoard();
+        if (chessBoard.getSideToMove() != connectionContext.getPlayerSide()) {
+            connectionContext.sendMessageToClient("error NotYourMove");
+            return;
+        }
+        Move move;
+        try {
+            move = new Move(command.split(" ")[1], chessBoard.getSideToMove());
+        } catch (Exception e) {
+            connectionContext.sendMessageToClient("error InvalidMove");
+            return;
+        }
+        if (!chessBoard.legalMoves().contains(move)) {
+            connectionContext.sendMessageToClient("error IllegalMove");
+            return;
+        }
+        chessBoard.doMove(move);
+        connectionContext.getOpponentContext().sendMessageToClient("move " + move);
+        // todo check mate/draw
     }
 }
