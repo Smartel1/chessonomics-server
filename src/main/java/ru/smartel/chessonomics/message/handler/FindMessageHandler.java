@@ -1,32 +1,32 @@
-package ru.smartel.chessonomics.command;
+package ru.smartel.chessonomics.message.handler;
 
-import com.github.bhlangonijr.chesslib.Board;
-import com.github.bhlangonijr.chesslib.game.GameContext;
-import com.github.bhlangonijr.chesslib.game.GameMode;
-import com.github.bhlangonijr.chesslib.game.VariationType;
 import ru.smartel.chessonomics.dto.ConnectionContext;
+import ru.smartel.chessonomics.message.ErrorMessage;
+import ru.smartel.chessonomics.message.FindMessage;
+import ru.smartel.chessonomics.message.Message;
+import ru.smartel.chessonomics.util.ChessUtil;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.github.bhlangonijr.chesslib.Side.BLACK;
 import static com.github.bhlangonijr.chesslib.Side.WHITE;
 
-public class FindCommandHandler implements CommandHandler {
+public class FindMessageHandler implements MessageHandler {
     private final ConcurrentHashMap<String, ConnectionContext> searchingPlayers;
 
-    public FindCommandHandler(ConcurrentHashMap<String, ConnectionContext> searchingPlayers) {
+    public FindMessageHandler(ConcurrentHashMap<String, ConnectionContext> searchingPlayers) {
         this.searchingPlayers = searchingPlayers;
     }
 
     @Override
-    public boolean accepts(String command) {
-        return command.equals("find");
+    public boolean accepts(Message message) {
+        return message instanceof FindMessage;
     }
 
     @Override
-    public void process(ConnectionContext connectionContext, String command) {
+    public void process(ConnectionContext connectionContext, Message message) {
         if (connectionContext.getPlayer() == null) {
-            connectionContext.sendMessageToClient("error MustLogin");
+            connectionContext.sendMessageToClient(ErrorMessage.UNAUTHENTICATED.toTcpString());
             return;
         }
         searchingPlayers.put(connectionContext.getPlayer().getName(), connectionContext);
@@ -43,10 +43,7 @@ public class FindCommandHandler implements CommandHandler {
                     }
                 }
 
-                var gameContext = new GameContext(GameMode.HUMAN_VS_HUMAN, VariationType.NORMAL);
-                gameContext.setStartFEN("4k3/3pp3/8/8/8/8/3PP3/4K3 w ---- - 0 1");
-                var chessBoard = new Board(gameContext, true);
-
+                var chessBoard = ChessUtil.initBoard();
                 var randomSide = Math.random() > 0.5 ? WHITE : BLACK;
 
                 context1.initGame(chessBoard, randomSide, context2);

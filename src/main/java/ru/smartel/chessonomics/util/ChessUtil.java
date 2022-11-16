@@ -1,7 +1,11 @@
 package ru.smartel.chessonomics.util;
 
+import com.github.bhlangonijr.chesslib.Board;
 import com.github.bhlangonijr.chesslib.PieceType;
 import com.github.bhlangonijr.chesslib.Square;
+import com.github.bhlangonijr.chesslib.game.GameContext;
+import com.github.bhlangonijr.chesslib.game.GameMode;
+import com.github.bhlangonijr.chesslib.game.VariationType;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -73,5 +77,11 @@ public class ChessUtil {
             default:
                 throw new IllegalArgumentException("No cost specified for piece " + pieceType);
         }
+    }
+
+    public static Board initBoard() {
+        var gameContext = new GameContext(GameMode.HUMAN_VS_HUMAN, VariationType.NORMAL);
+        gameContext.setStartFEN("4k3/3pp3/8/8/8/8/3PP3/4K3 w ---- - 0 1");
+        return new Board(gameContext, true);
     }
 }
