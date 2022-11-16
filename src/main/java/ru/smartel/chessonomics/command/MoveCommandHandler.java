@@ -17,6 +17,10 @@ public class MoveCommandHandler implements CommandHandler {
             return;
         }
         var chessBoard = connectionContext.getChessBoard();
+        if (chessBoard.isMated() || chessBoard.isDraw()) {
+            connectionContext.sendMessageToClient("error GameIsEnded");
+            return;
+        }
         if (chessBoard.getSideToMove() != connectionContext.getPlayerSide()) {
             connectionContext.sendMessageToClient("error NotYourMove");
             return;
@@ -24,7 +28,8 @@ public class MoveCommandHandler implements CommandHandler {
         var moveAsString = command.split(" ")[1];
         if (moveAsString.equals("null")) {
             chessBoard.doNullMove();
-            connectionContext.getOpponentContext().sendMessageToClient("move null");
+            connectionContext.setPoints(connectionContext.getPoints() + 1);
+            connectionContext.getOpponentContext().sendMessageToClient(command);
             return;
         }
         Move move;
@@ -39,7 +44,6 @@ public class MoveCommandHandler implements CommandHandler {
             return;
         }
         chessBoard.doMove(move);
-        connectionContext.getOpponentContext().sendMessageToClient("move " + move);
-        // todo check mate/draw
+        connectionContext.getOpponentContext().sendMessageToClient(command);
     }
 }

@@ -26,3 +26,6 @@ puts the player into queue of searching players. When opponent is found server r
 ### move [move]
 make a move. Server will validate the move and resend it to the opponent.
 Notice that [move] may me 'null' if player decided to skip the move (make null move).
+
+### spawn [piece type] [square]
+spawn new piece. Server will check if player has enough points to perform spawn 

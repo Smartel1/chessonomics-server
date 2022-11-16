@@ -44,6 +44,7 @@ public class FindCommandHandler implements CommandHandler {
                 }
 
                 var gameContext = new GameContext(GameMode.HUMAN_VS_HUMAN, VariationType.NORMAL);
+                gameContext.setStartFEN("4k3/3pp3/8/8/8/8/3PP3/4K3 w ---- - 0 1");
                 var chessBoard = new Board(gameContext, true);
 
                 var randomSide = Math.random() > 0.5 ? WHITE : BLACK;

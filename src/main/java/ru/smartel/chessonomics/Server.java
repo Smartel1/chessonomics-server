@@ -4,6 +4,7 @@ import ru.smartel.chessonomics.command.CommandHandler;
 import ru.smartel.chessonomics.command.FindCommandHandler;
 import ru.smartel.chessonomics.command.LoginCommandHandler;
 import ru.smartel.chessonomics.command.MoveCommandHandler;
+import ru.smartel.chessonomics.command.SpawnCommandHandler;
 import ru.smartel.chessonomics.dto.ConnectionContext;
 import ru.smartel.chessonomics.dto.Player;
 
@@ -26,7 +27,8 @@ public class Server {
         commandHandlers = List.of(
                 new LoginCommandHandler(),
                 new FindCommandHandler(searchingContextsByPlayerName),
-                new MoveCommandHandler()
+                new MoveCommandHandler(),
+                new SpawnCommandHandler()
         );
     }
 
