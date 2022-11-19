@@ -9,13 +9,9 @@ import static java.util.Optional.empty;
 public class LoginMessageParser implements MessageParser<LoginMessage> {
     @Override
     public Optional<LoginMessage> parse(String input) {
-        if (!input.startsWith("login ")) {
+        if (!input.equals("login")) {
             return empty();
         }
-        var commandParts = input.split(" ");
-        if (commandParts.length != 2) {
-            return empty();
-        }
-        return Optional.of(new LoginMessage(commandParts[1]));
+        return Optional.of(new LoginMessage());
     }
 }

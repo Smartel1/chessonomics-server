@@ -2,7 +2,7 @@ package ru.smartel.chessonomics.message.handler;
 
 import ru.smartel.chessonomics.dto.ConnectionContext;
 import ru.smartel.chessonomics.message.ErrorMessage;
-import ru.smartel.chessonomics.message.FindMessage;
+import ru.smartel.chessonomics.message.SearchMessage;
 import ru.smartel.chessonomics.message.Message;
 import ru.smartel.chessonomics.util.ChessUtil;
 
@@ -11,16 +11,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.github.bhlangonijr.chesslib.Side.BLACK;
 import static com.github.bhlangonijr.chesslib.Side.WHITE;
 
-public class FindMessageHandler implements MessageHandler {
+public class SearchMessageHandler implements MessageHandler {
     private final ConcurrentHashMap<String, ConnectionContext> searchingPlayers;
 
-    public FindMessageHandler(ConcurrentHashMap<String, ConnectionContext> searchingPlayers) {
+    public SearchMessageHandler(ConcurrentHashMap<String, ConnectionContext> searchingPlayers) {
         this.searchingPlayers = searchingPlayers;
     }
 
     @Override
     public boolean accepts(Message message) {
-        return message instanceof FindMessage;
+        return message instanceof SearchMessage;
     }
 
     @Override
@@ -29,7 +29,9 @@ public class FindMessageHandler implements MessageHandler {
             connectionContext.sendMessageToClient(ErrorMessage.UNAUTHENTICATED.toTcpString());
             return;
         }
-        searchingPlayers.put(connectionContext.getPlayer().getName(), connectionContext);
+        var playerName = ((SearchMessage) message).getPlayerName();
+        connectionContext.getPlayer().setName(playerName);
+        searchingPlayers.put(playerName, connectionContext);
         synchronized (searchingPlayers) {
             // dumb implementation of players searching
             if (searchingPlayers.size() > 1) {

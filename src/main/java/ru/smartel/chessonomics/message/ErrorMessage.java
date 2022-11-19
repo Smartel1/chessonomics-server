@@ -9,7 +9,8 @@ public enum ErrorMessage implements Message {
     SPAWN_NOT_VACANT(6),
     NOT_ENOUGH_POINTS(7),
     INVALID_MOVE(8),
-    ILLEGAL_MOVE(9);
+    ILLEGAL_MOVE(9),
+    NOT_SEARCHING(10);
 
     private final int code;
 

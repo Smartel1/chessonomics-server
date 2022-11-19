@@ -15,8 +15,8 @@ public class LoginMessageHandler implements MessageHandler {
 
     @Override
     public void process(ConnectionContext connectionContext, Message message) {
-        var player = new Player(((LoginMessage) message).getPlayerName(), PlayerStatus.LOGGED_IN);
+        var player = new Player("guest", PlayerStatus.LOGGED_IN);
         connectionContext.setPlayer(player);
-        connectionContext.sendMessageToClient("hello " + player.getName());
+        connectionContext.sendMessageToClient("v1");
     }
 }
