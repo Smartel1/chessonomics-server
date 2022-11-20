@@ -25,3 +25,11 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+jar {
+    manifest {
+        attributes('Main-Class': 'ru.smartel.chessonomics.Server')
+    }
+    from {
+        configurations.runtimeClasspath.filter { it.exists() }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

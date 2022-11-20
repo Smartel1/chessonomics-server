@@ -2,6 +2,7 @@ package ru.smartel.chessonomics.message.handler;
 
 import com.github.bhlangonijr.chesslib.move.Move;
 import ru.smartel.chessonomics.dto.ConnectionContext;
+import ru.smartel.chessonomics.dto.PlayerStatus;
 import ru.smartel.chessonomics.message.ErrorMessage;
 import ru.smartel.chessonomics.message.Message;
 import ru.smartel.chessonomics.message.MoveMessage;
@@ -19,11 +20,11 @@ public class MoveMessageHandler implements MessageHandler {
             connectionContext.sendMessageToClient(ErrorMessage.UNAUTHENTICATED.toTcpString());
             return;
         }
-        var chessBoard = connectionContext.getChessBoard();
-        if (chessBoard.isMated() || chessBoard.isDraw()) {
-            connectionContext.sendMessageToClient(ErrorMessage.GAME_ENDED.toTcpString());
+        if (connectionContext.getPlayer().getStatus() != PlayerStatus.PLAYING) {
+            connectionContext.sendMessageToClient(ErrorMessage.NOT_PLAYING.toTcpString());
             return;
         }
+        var chessBoard = connectionContext.getChessBoard();
         if (chessBoard.getSideToMove() != connectionContext.getPlayerSide()) {
             connectionContext.sendMessageToClient(ErrorMessage.NOT_YOUR_MOVE.toTcpString());
             return;
@@ -47,5 +48,9 @@ public class MoveMessageHandler implements MessageHandler {
         }
         chessBoard.doMove(move);
         connectionContext.getOpponentContext().sendMessageToClient(message.toTcpString());
+        if (chessBoard.isMated() || chessBoard.isDraw()) {
+            connectionContext.getOpponentContext().clearGame();
+            connectionContext.clearGame();
+        }
     }
 }

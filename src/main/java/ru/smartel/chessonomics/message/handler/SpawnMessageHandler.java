@@ -4,6 +4,7 @@ import com.github.bhlangonijr.chesslib.Piece;
 import com.github.bhlangonijr.chesslib.PieceType;
 import com.github.bhlangonijr.chesslib.Square;
 import ru.smartel.chessonomics.dto.ConnectionContext;
+import ru.smartel.chessonomics.dto.PlayerStatus;
 import ru.smartel.chessonomics.message.ErrorMessage;
 import ru.smartel.chessonomics.message.Message;
 import ru.smartel.chessonomics.message.SpawnMessage;
@@ -23,11 +24,11 @@ public class SpawnMessageHandler implements MessageHandler {
             connectionContext.sendMessageToClient(ErrorMessage.UNAUTHENTICATED.toTcpString());
             return;
         }
-        var chessBoard = connectionContext.getChessBoard();
-        if (chessBoard.isMated() || chessBoard.isDraw()) {
-            connectionContext.sendMessageToClient(ErrorMessage.GAME_ENDED.toTcpString());
+        if (connectionContext.getPlayer().getStatus() != PlayerStatus.PLAYING) {
+            connectionContext.sendMessageToClient(ErrorMessage.NOT_PLAYING.toTcpString());
             return;
         }
+        var chessBoard = connectionContext.getChessBoard();
         if (chessBoard.getSideToMove() != connectionContext.getPlayerSide()) {
             connectionContext.sendMessageToClient(ErrorMessage.NOT_YOUR_MOVE.toTcpString());
             return;

@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Set;
 
+import static ru.smartel.chessonomics.dto.PlayerStatus.LOGGED_IN;
 import static ru.smartel.chessonomics.dto.PlayerStatus.PLAYING;
 
 public class ConnectionContext {
@@ -71,6 +72,15 @@ public class ConnectionContext {
         this.availableSpawnSquares = playerSide == Side.WHITE ? ChessUtil.getSpawnSquaresForWhite() : ChessUtil.getSpawnSquaresForBlack();
         this.points = 0;
         sendMessageToClient("started " + opponentContext.getPlayer().getName() + " " + playerSide);
+    }
+
+    public void clearGame() {
+        this.player.setStatus(LOGGED_IN);
+        this.chessBoard = null;
+        this.playerSide = null;
+        this.opponentContext = null;
+        this.availableSpawnSquares = null;
+        this.points = 0;
     }
 
     public void sendMessageToClient(String message) {

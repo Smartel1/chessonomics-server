@@ -1,6 +1,7 @@
 package ru.smartel.chessonomics.message.handler;
 
 import ru.smartel.chessonomics.dto.ConnectionContext;
+import ru.smartel.chessonomics.dto.PlayerStatus;
 import ru.smartel.chessonomics.message.ErrorMessage;
 import ru.smartel.chessonomics.message.SearchMessage;
 import ru.smartel.chessonomics.message.Message;
@@ -31,6 +32,7 @@ public class SearchMessageHandler implements MessageHandler {
         }
         var playerName = ((SearchMessage) message).getPlayerName();
         connectionContext.getPlayer().setName(playerName);
+        connectionContext.getPlayer().setStatus(PlayerStatus.SEARCHING);
         searchingPlayers.put(playerName, connectionContext);
         synchronized (searchingPlayers) {
             // dumb implementation of players searching
