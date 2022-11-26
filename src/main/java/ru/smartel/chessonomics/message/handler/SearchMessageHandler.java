@@ -31,10 +31,16 @@ public class SearchMessageHandler implements MessageHandler {
             return;
         }
         var playerName = ((SearchMessage) message).getPlayerName();
-        connectionContext.getPlayer().setName(playerName);
-        connectionContext.getPlayer().setStatus(PlayerStatus.SEARCHING);
-        searchingPlayers.put(playerName, connectionContext);
+
         synchronized (searchingPlayers) {
+            if (searchingPlayers.containsKey(playerName)) {
+                connectionContext.sendMessageToClient(ErrorMessage.DUPLICATE_PLAYER.toTcpString());
+                return;
+            }
+            connectionContext.getPlayer().setName(playerName);
+            connectionContext.getPlayer().setStatus(PlayerStatus.SEARCHING);
+            searchingPlayers.put(playerName, connectionContext);
+
             // dumb implementation of players searching
             if (searchingPlayers.size() > 1) {
                 ConnectionContext context1 = null;

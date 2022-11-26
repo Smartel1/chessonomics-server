@@ -10,7 +10,8 @@ public enum ErrorMessage implements Message {
     NOT_ENOUGH_POINTS(7),
     INVALID_MOVE(8),
     ILLEGAL_MOVE(9),
-    NOT_SEARCHING(10);
+    NOT_SEARCHING(10),
+    DUPLICATE_PLAYER(11);
 
     private final int code;
 

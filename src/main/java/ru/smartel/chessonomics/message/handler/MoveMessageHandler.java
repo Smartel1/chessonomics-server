@@ -1,5 +1,6 @@
 package ru.smartel.chessonomics.message.handler;
 
+import com.github.bhlangonijr.chesslib.PieceType;
 import com.github.bhlangonijr.chesslib.move.Move;
 import ru.smartel.chessonomics.dto.ConnectionContext;
 import ru.smartel.chessonomics.dto.PlayerStatus;
@@ -47,6 +48,11 @@ public class MoveMessageHandler implements MessageHandler {
             return;
         }
         chessBoard.doMove(move);
+        if (chessBoard.getPiece(move.getTo()).getPieceType() == PieceType.KING) {
+            connectionContext.setPoints(0);
+        } else {
+            connectionContext.setPoints(Math.max(0, connectionContext.getPoints() - 1));
+        }
         connectionContext.getOpponentContext().sendMessageToClient(message.toTcpString());
         if (chessBoard.isMated() || chessBoard.isDraw()) {
             connectionContext.getOpponentContext().clearGame();
