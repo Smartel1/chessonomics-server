@@ -53,7 +53,7 @@ public class SpawnMessageHandler implements MessageHandler {
         chessBoard.setPiece(Piece.make(chessBoard.getSideToMove(), pieceType), square);
         chessBoard.doNullMove();
         connectionContext.getAvailableSpawnSquares().get(pieceType).remove(square);
-        connectionContext.setPoints(connectionContext.getPoints() - cost);
+        connectionContext.setPoints(connectionContext.getPoints() - cost + 1);
 
         connectionContext.getOpponentContext().sendMessageToClient(message.toTcpString());
     }
